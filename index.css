@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Global stylesheet used by Vite and production builds */
 @tailwind base;
 @tailwind components;
@@ -12,3 +13,19 @@ body {
   margin: 0;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
+=======
+/* Global stylesheet used by Vite and production builds */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+}
+
+/* Basic defaults */
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+>>>>>>> 8f85a46 (Add global index.css and import to fix Vercel build)
