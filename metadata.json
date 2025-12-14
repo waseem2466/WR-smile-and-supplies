@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 {
   "name": "WR Smile POS",
   "description": "Premium Cloud-based Billing, Loan & Profit Management System with Glassmorphism UI.",
   "requestFramePermissions": []
+=======
+{
+  "name": "WR Smile POS",
+  "description": "Premium Cloud-based Billing, Loan & Profit Management System with Glassmorphism UI.",
+  "requestFramePermissions": []
+>>>>>>> 3f74523 (Initial billing system)
 }

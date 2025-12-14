@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "wr-smile-pos",
   "private": true,
@@ -21,3 +22,30 @@
     "vite": "^6.2.0"
   }
 }
+=======
+{
+  "name": "wr-smile-pos",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.16.2",
+    "lucide-react": "^0.561.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "recharts": "^3.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "prisma": "^4.16.2",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}
+>>>>>>> 3f74523 (Initial billing system)

@@ -1,0 +1,81 @@
+
+generator client {
+	provider = "prisma-client-js"
+}
+
+datasource db {
+	provider = "postgresql"
+	url      = env("DATABASE_URL")
+}
+
+model User {
+	id        Int      @id @default(autoincrement())
+	email     String   @unique
+	name      String?
+	createdAt DateTime @default(now())
+}
+
+model Product {
+	id          Int        @id @default(autoincrement())
+	sku         String?    @unique
+	name        String
+	description String?
+	cost        Decimal    @db.Decimal(14,2)
+	price       Decimal    @db.Decimal(14,2)
+	stock       Int        @default(0)
+	createdAt   DateTime   @default(now())
+	items       BillItem[]
+}
+
+model Bill {
+	id            Int        @id @default(autoincrement())
+	invoiceNumber String     @unique
+	customerName  String?
+	subtotal      Decimal    @db.Decimal(14,2)
+	tax           Decimal?   @db.Decimal(14,2)
+	discount      Decimal?   @db.Decimal(14,2)
+	total         Decimal    @db.Decimal(14,2)
+	profit        Decimal?   @db.Decimal(14,2) // total profit for this bill
+	status        String?    
+	createdAt     DateTime   @default(now())
+	items         BillItem[]
+	payments      Payment[]
+}
+
+model BillItem {
+	id         Int      @id @default(autoincrement())
+	billId     Int
+	productId  Int
+	quantity   Int      @default(1)
+	unitPrice  Decimal  @db.Decimal(14,2) // sale price per unit
+	unitCost   Decimal  @db.Decimal(14,2) // cost per unit (for profit calc)
+	total      Decimal  @db.Decimal(14,2)
+	profit     Decimal? @db.Decimal(14,2) // profit for this line (unitProfit * qty)
+
+	bill    Bill    @relation(fields: [billId], references: [id])
+	product Product @relation(fields: [productId], references: [id])
+}
+
+model Loan {
+	id           Int       @id @default(autoincrement())
+	borrower     String
+	principal    Decimal   @db.Decimal(14,2)
+	outstanding  Decimal   @db.Decimal(14,2)
+	interestRate Float?
+	dueDate      DateTime?
+	status       String?   
+	createdAt    DateTime  @default(now())
+	payments     Payment[]
+}
+
+model Payment {
+	id        Int      @id @default(autoincrement())
+	loanId    Int?
+	billId    Int?
+	amount    Decimal  @db.Decimal(14,2)
+	method    String?
+	paidAt    DateTime @default(now())
+
+	loan Loan? @relation(fields: [loanId], references: [id])
+	bill Bill? @relation(fields: [billId], references: [id])
+}
