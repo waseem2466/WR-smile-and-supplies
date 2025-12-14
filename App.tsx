@@ -194,5 +194,9 @@ function App() {
   );
 }
 
+<<<<<<< HEAD
 >>>>>>> 3f74523 (Initial billing system)
 export default App;
+=======
+export default App;
+>>>>>>> 6360644 (Fix case-sensitive imports for Vercel)
