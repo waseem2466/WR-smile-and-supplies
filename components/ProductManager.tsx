@@ -4,6 +4,7 @@ import { GlassInput } from './ui/GlassInput';
 import { GlassButton } from './ui/GlassButton';
 import { db } from '../services/mockDb';
 import { Product, MarginType } from '../types';
+import { uuid } from '../utils/uuid';
 import { Edit2, Trash2, Plus } from 'lucide-react';
 
 export const ProductManager: React.FC = () => {
@@ -12,8 +13,7 @@ export const ProductManager: React.FC = () => {
   const [formData, setFormData] = useState<Partial<Product>>({
     marginType: MarginType.FIXED,
     transportCost: 0,
-    marginValue: 0,
-    costPrice: 0
+    marginValue: 0
   });
 
   useEffect(() => {
@@ -43,33 +43,59 @@ export const ProductManager: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    const updated = { ...formData, [name]: name === 'marginType' || name === 'name' || name === 'category' ? value : Number(value) };
-    
-    if (['costPrice', 'transportCost', 'marginType', 'marginValue'].includes(name)) {
+    // Ensure numeric fields are stored as numbers; keep strings for name/category
+    let val: any = value;
+    if (name === 'marginType') {
+      // marginType comes from enum values; convert back to number
+      val = Number(value);
+    } else if (!['name', 'category'].includes(name)) {
+      val = value === '' ? '' : Number(value);
+    }
+
+    const updated: any = { ...formData, [name]: val };
+
+    if (['transportCost', 'marginType', 'marginValue'].includes(name)) {
       const { totalCost, sellingPrice } = calculatePricing(updated);
       updated.totalCost = totalCost;
       updated.sellingPrice = sellingPrice;
     }
-    
+
     setFormData(updated);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.costPrice) return;
-
-    const product = {
-      ...formData,
-      id: formData.id || crypto.randomUUID(),
-    } as Product;
-
-    if (formData.id) {
-      await db.products.update(product);
-    } else {
-      await db.products.add(product);
+    // Validate required fields more robustly
+    if (!formData.name) {
+      alert('Please provide product name');
+      return;
     }
-    
-    setFormData({ marginType: MarginType.FIXED, transportCost: 0, marginValue: 0, costPrice: 0 });
+
+    const product: Product = {
+      ...(formData as Product),
+      id: (formData.id as string) || uuid(),
+      // Ensure numeric defaults
+      stock: Number(formData.stock) || 0,
+      transportCost: Number(formData.transportCost) || 0,
+      totalCost: Number((formData.totalCost as any) || 0),
+      sellingPrice: Number((formData.sellingPrice as any) || 0),
+      marginType: Number(formData.marginType) as MarginType,
+      marginValue: Number(formData.marginValue) || 0,
+    };
+
+    try {
+      if (formData.id) {
+        await db.products.update(product);
+      } else {
+        await db.products.add(product);
+      }
+    } catch (err) {
+      console.error('Failed to save product', err);
+      alert('Failed to save product. See console for details.');
+      return;
+    }
+
+    setFormData({ marginType: MarginType.FIXED, transportCost: 0, marginValue: 0 });
     setIsEditing(false);
     loadProducts();
   };
@@ -103,7 +129,7 @@ export const ProductManager: React.FC = () => {
             <div className="p-4 bg-white/5 rounded-xl border border-white/10 space-y-3">
               <h4 className="text-xs font-semibold text-gray-400 uppercase">Costing</h4>
               <div className="grid grid-cols-2 gap-4">
-                <GlassInput name="costPrice" label="Cost Price" type="number" value={formData.costPrice || ''} onChange={handleChange} required />
+                {/* Removed Cost Price input */}
                 <GlassInput name="transportCost" label="Transport" type="number" value={formData.transportCost || ''} onChange={handleChange} />
               </div>
               <div className="flex justify-between items-center text-sm pt-2 border-t border-white/10">

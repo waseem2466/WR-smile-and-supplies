@@ -5,9 +5,9 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Initial Mock Data
 const INITIAL_PRODUCTS: Product[] = [
-  { id: '1', name: 'Cement Bag (50kg)', category: 'Construction', costPrice: 1800, transportCost: 50, totalCost: 1850, marginType: MarginType.FIXED, marginValue: 150, sellingPrice: 2000, stock: 100 },
-  { id: '2', name: 'PVC Pipe 4"', category: 'Plumbing', costPrice: 800, transportCost: 20, totalCost: 820, marginType: MarginType.PERCENTAGE, marginValue: 20, sellingPrice: 984, stock: 50 },
-  { id: '3', name: 'Paint Bucket (10L)', category: 'Paints', costPrice: 4500, transportCost: 100, totalCost: 4600, marginType: MarginType.FIXED, marginValue: 400, sellingPrice: 5000, stock: 25 },
+  { id: '1', name: 'Cement Bag (50kg)', category: 'Construction', transportCost: 50, totalCost: 1850, marginType: MarginType.FIXED, marginValue: 150, sellingPrice: 2000, stock: 100 },
+  { id: '2', name: 'PVC Pipe 4"', category: 'Plumbing', transportCost: 20, totalCost: 820, marginType: MarginType.PERCENTAGE, marginValue: 20, sellingPrice: 984, stock: 50 },
+  { id: '3', name: 'Paint Bucket (10L)', category: 'Paints', transportCost: 100, totalCost: 4600, marginType: MarginType.FIXED, marginValue: 400, sellingPrice: 5000, stock: 25 },
 ];
 
 const INITIAL_CUSTOMERS: Customer[] = [
@@ -106,7 +106,7 @@ export const db = {
         // Create Loan Record
         const loans = load<Loan[]>(KEYS.LOANS, []);
         loans.push({
-            id: crypto.randomUUID(),
+          id: uuid(),
             customerId: bill.customerId,
             billId: bill.id,
             amount: bill.finalAmount,

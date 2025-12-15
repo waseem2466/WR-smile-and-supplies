@@ -101,7 +101,7 @@ import { ProductManager } from './components/ProductManager';
 import { BillingPOS } from './components/BillingPOS';
 import { CustomerManager } from './components/CustomerManager';
 import { Login } from './components/Login';
-import { LayoutDashboard, ShoppingCart, Package, Users, LogOut, Settings } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Users, LogOut } from 'lucide-react';
 
 type View = 'dashboard' | 'billing' | 'products' | 'customers';
 
@@ -156,10 +156,6 @@ function App() {
         </nav>
 
         <div className="pt-6 border-t border-white/10 space-y-2">
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 transition-colors">
-            <Settings size={20} />
-            <span className="font-medium">Settings</span>
-          </button>
           <button 
             onClick={() => setIsAuthenticated(false)}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors"
@@ -195,8 +191,12 @@ function App() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 3f74523 (Initial billing system)
 export default App;
 =======
 export default App;
 >>>>>>> 6360644 (Fix case-sensitive imports for Vercel)
+=======
+export default App;
+>>>>>>> 2306139 (chore: commit local changes before rebase)

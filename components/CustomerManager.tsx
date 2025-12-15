@@ -3,6 +3,7 @@ import { GlassCard } from './ui/GlassCard';
 import { db } from '../services/mockDb';
 import { Customer, Loan, Payment } from '../types';
 import { Phone, ArrowUpRight, ArrowLeft, Calendar, DollarSign, Save, History } from 'lucide-react';
+import { uuid } from '../utils/uuid';
 import { GlassInput } from './ui/GlassInput';
 import { GlassButton } from './ui/GlassButton';
 
@@ -28,7 +29,7 @@ export const CustomerManager: React.FC = () => {
     e.preventDefault();
     if (!newCustomer.name) return;
     await db.customers.add({
-      id: crypto.randomUUID(),
+      id: uuid(),
       ...newCustomer,
       totalLoan: 0,
       totalPaid: 0,
@@ -59,7 +60,7 @@ export const CustomerManager: React.FC = () => {
     const amount = Number(paymentForm.amount);
     
     const newPayment: Payment = {
-        id: crypto.randomUUID(),
+        id: uuid(),
         customerId: selectedCustomer.id,
         amount: amount,
         date: paymentForm.date

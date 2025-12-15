@@ -74,7 +74,6 @@ export interface Product {
   id: string;
   name: string;
   category: string;
-  costPrice: number;
   transportCost: number;
   totalCost: number;
   marginType: MarginType;
@@ -96,7 +95,6 @@ export interface BillItem {
   productId: string;
   name: string;
   quantity: number;
-  costPrice: number;
   sellingPrice: number;
   profit: number;
   warranty: boolean;

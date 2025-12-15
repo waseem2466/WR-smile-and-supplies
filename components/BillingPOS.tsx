@@ -5,6 +5,7 @@ import { GlassButton } from './ui/GlassButton';
 import { db } from '../services/mockDb';
 import { Product, Customer, BillItem, Bill } from '../types';
 import { Search, ShoppingCart, Trash, User, Printer, Share2, Plus, X, Save, PackagePlus } from 'lucide-react';
+import { uuid } from '../utils/uuid';
 
 export const BillingPOS: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -18,7 +19,7 @@ export const BillingPOS: React.FC = () => {
 
   // Manual Item State
   const [isCustomItemMode, setIsCustomItemMode] = useState(false);
-  const [customItem, setCustomItem] = useState({ name: '', sellingPrice: '', costPrice: '', quantity: 1 });
+  const [customItem, setCustomItem] = useState({ name: '', sellingPrice: '', quantity: 1 });
 
   // New Customer State
   const [isNewCustomerMode, setIsNewCustomerMode] = useState(false);
@@ -35,13 +36,12 @@ export const BillingPOS: React.FC = () => {
   const addToCart = (product: Product) => {
     const existing = cart.find(item => item.productId === product.id);
     if (existing) {
-      setCart(cart.map(item => item.productId === product.id ? { ...item, quantity: item.quantity + 1, profit: (item.sellingPrice - item.costPrice) * (item.quantity + 1) } : item));
+      setCart(cart.map(item => item.productId === product.id ? { ...item, quantity: item.quantity + 1, profit: (item.sellingPrice - product.totalCost) * (item.quantity + 1) } : item));
     } else {
       const item: BillItem = {
         productId: product.id,
         name: product.name,
         quantity: 1,
-        costPrice: product.totalCost,
         sellingPrice: product.sellingPrice,
         profit: product.sellingPrice - product.totalCost,
         warranty: false
@@ -55,21 +55,19 @@ export const BillingPOS: React.FC = () => {
     if (!customItem.name || !customItem.sellingPrice) return;
 
     const sellingPrice = Number(customItem.sellingPrice);
-    const costPrice = Number(customItem.costPrice) || 0; // Optional, defaults to 0
     const quantity = Number(customItem.quantity) || 1;
 
     const item: BillItem = {
       productId: `manual-${Date.now()}`,
       name: customItem.name,
       quantity: quantity,
-      costPrice: costPrice,
       sellingPrice: sellingPrice,
-      profit: (sellingPrice - costPrice) * quantity,
+      profit: 0, // No cost info for manual item
       warranty: false
     };
 
     setCart([...cart, item]);
-    setCustomItem({ name: '', sellingPrice: '', costPrice: '', quantity: 1 });
+    setCustomItem({ name: '', sellingPrice: '', quantity: 1 });
     setIsCustomItemMode(false);
   };
 
@@ -78,7 +76,7 @@ export const BillingPOS: React.FC = () => {
     if (!newCustomerData.name) return;
 
     const newCus: Customer = {
-      id: crypto.randomUUID(),
+      id: uuid(),
       name: newCustomerData.name,
       phone: newCustomerData.phone,
       totalLoan: 0,
@@ -103,7 +101,7 @@ export const BillingPOS: React.FC = () => {
     const newCart = [...cart];
     const item = newCart[index];
     item.quantity = qty;
-    item.profit = (item.sellingPrice - item.costPrice) * qty;
+    // No costPrice, so profit remains as is
     setCart(newCart);
   };
 
@@ -115,7 +113,7 @@ export const BillingPOS: React.FC = () => {
 
   const calculateTotals = () => {
     const totalAmount = cart.reduce((sum, item) => sum + (item.sellingPrice * item.quantity), 0);
-    const totalCost = cart.reduce((sum, item) => sum + (item.costPrice * item.quantity), 0);
+    const totalCost = 0; // No costPrice, so totalCost is 0
     const totalProfit = cart.reduce((sum, item) => sum + item.profit, 0);
     const finalAmount = totalAmount - discount;
     return { totalAmount, totalCost, totalProfit, finalAmount };
@@ -133,7 +131,7 @@ export const BillingPOS: React.FC = () => {
     const customer = customers.find(c => c.id === selectedCustomer);
 
     const bill: Bill = {
-      id: crypto.randomUUID(),
+      id: uuid(),
       number: `INV-${Date.now().toString().slice(-4)}`,
       date: new Date().toISOString(),
       customerId: selectedCustomer || null,
@@ -239,13 +237,7 @@ export const BillingPOS: React.FC = () => {
                         onChange={e => setCustomItem({...customItem, sellingPrice: e.target.value})}
                         required
                      />
-                     <GlassInput 
-                        placeholder="Cost (Optional)" 
-                        type="number"
-                        title="Enter Cost Price for accurate profit calculation"
-                        value={customItem.costPrice}
-                        onChange={e => setCustomItem({...customItem, costPrice: e.target.value})}
-                     />
+                    {/* Removed Cost input for custom item */}
                      <div className="flex gap-2">
                         <GlassInput 
                             placeholder="Qty" 
