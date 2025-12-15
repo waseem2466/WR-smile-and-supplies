@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 export enum MarginType {
   PERCENTAGE = 'PERCENTAGE',
   FIXED = 'FIXED'

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import { Dashboard } from './components/Dashboard';
 import { ProductManager } from './components/ProductManager';
@@ -94,7 +93,7 @@ function App() {
   );
 }
 
-=======
+export default App;
 import React, { useState } from 'react';
 import { Dashboard } from './components/Dashboard';
 import { ProductManager } from './components/ProductManager';
